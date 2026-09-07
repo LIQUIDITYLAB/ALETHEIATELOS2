@@ -1,171 +1,290 @@
-# AletheiaTelos
+AletheiaTelos
 
-AletheiaTelos is an experimental decision-intelligence terminal designed around a simple principle:
+Institutional Real Estate Investment Intelligence
 
-> Independent intelligence should not be destroyed by forced consensus.
+AletheiaTelos is an AI-native institutional real-estate investment intelligence platform designed to combine institutional CRE investment discipline, multi-perspective computational reasoning, and persistent organizational learning.
 
-Instead of averaging conflicting strategies into a meaningless signal, AletheiaTelos preserves their individual reasoning, identifies conflicts, accounts for different time horizons, detects regime changes, and allows an orchestration layer to determine how the signals should coexist.
+The objective is not to replace investment judgment.
 
-## Core Architecture
+It is to build an intelligence layer around the investment process that makes underwriting more rigorous, assumptions more visible, disagreement more useful, and institutional knowledge increasingly cumulative.
 
-### Aletheia — Intelligence
+Human investment authority remains explicit.
 
-The Aletheia layer contains independent strategy agents.
+⸻
 
-Each agent produces its own:
+The Core Idea
 
-- Direction
-- Confidence
-- Time horizon
-- Evidence
-- Reasoning
-- Regime assumptions
+Institutional real-estate investing is not a single decision.
 
-Agents are not required to agree.
+It is a continuous process:
 
-### Conflict & Coexistence Engine
+Opportunity → Screening → Underwriting → Due Diligence → Scenario Analysis → Capital Structure → Value Creation → Investment Committee → Capital → Asset → Operations → Outcome → Learning
 
-Conflicting signals are treated as information rather than errors.
+AletheiaTelos connects these stages into a persistent intelligence and learning loop.
 
-The orchestration layer evaluates:
+The system does not simply analyze an acquisition.
 
-- Directional conflicts
-- Time-horizon differences
-- Confidence
-- Strategy correlation
-- Market regime
-- Liquidity conditions
-- Risk constraints
+It observes what happened after the decision—and uses that information to improve the next one.
 
-The objective is not fake consensus.
+⸻
 
-The objective is preserving useful independent information.
+Computational Kaleidoscope
 
-### Telos — Decision & Execution
+At the center of AletheiaTelos is the Computational Kaleidoscope.
 
-Telos converts the surviving intelligence into an actionable portfolio structure.
+A shared investment question is examined through multiple independent reasoning perspectives:
 
-This includes:
+* Researcher — market, property, industry, and external intelligence
+* Quant — quantitative analysis, probabilities, sensitivity, and signal evaluation
+* Investor — investment thesis, risk/reward, capital allocation, and returns
+* Scientist — hypothesis formation, testing, evidence, and causal reasoning
+* Systems — dependencies, interactions, second-order effects, and system behavior
+* Contrarian — disconfirming evidence, failure modes, and reasons the thesis may be wrong
+* Philosopher — assumptions, definitions, epistemology, and conceptual integrity
+* Observer — real-world outcomes and post-decision observation
+* Epistemic Memory — accumulated institutional knowledge and prior experience
+* Meta-Intelligence — evaluation of the reasoning process itself
+* Governance / CHARTER — boundaries, authority, accountability, and system constraints
 
-- Position sizing
-- Exposure management
-- Conflict-aware allocation
-- Regime-conditioned scaling
-- Capacity constraints
-- Trading costs
-- Risk budgets
-- Auditability
+These perspectives are intentionally independent.
 
-Every major decision should have a reason.
+Agreement is not the objective.
 
-## Research Principle
+Better judgment is.
 
-Five independent strategies should not automatically become one averaged strategy.
+⸻
 
-If one agent is LONG and another is SHORT, the system should first ask:
+Institutional CRE Workflow
 
-**Why do they disagree?**
+AletheiaTelos maps computational intelligence onto the institutional investment process.
 
-A disagreement may represent:
+MARKET / OPPORTUNITY
+        ↓
+INITIAL SCREEN
+        ↓
+UNDERWRITE
+        ↓
+DUE DILIGENCE
+        ↓
+SCENARIO ANALYSIS
+        ↓
+CAPITAL STRUCTURE
+        ↓
+VALUE CREATION PLAN
+        ↓
+INVESTMENT MEMO
+        ↓
+HUMAN INVESTMENT COMMITTEE
 
-- Different time horizons
-- Different information sets
-- Different market assumptions
-- Different risk models
-- Different regime expectations
+At both screening and investment-committee stages, NO-GO is a legitimate outcome.
 
-The orchestration layer exists to understand those differences before collapsing them.
+A rejected opportunity does not simply disappear.
 
-## Current Prototype
+The reasoning behind the rejection can become institutional memory.
 
-The current terminal demonstrates:
+This allows future opportunities to benefit from decisions that were never made.
 
-- Five independent strategy agents
-- Independent confidence scores
-- Multiple trading horizons
-- Conflict detection
-- Simple averaging comparison
-- Orchestrated allocation
-- Regime switching
-- Market stress testing
-- Agent failure simulation
-- Audit trail
-- System-context export
+⸻
 
-## Research Direction
+Capital & Asset Engine
 
-AletheiaTelos is currently a research prototype.
+Following human investment approval, the platform models the movement of capital into the real asset:
 
-The next stages will focus on testing whether orchestration actually improves decision quality rather than merely producing more complicated outputs.
+LP / PRIVATE CAPITAL
+JV CAPITAL
+DEBT
+SPONSOR CAPITAL
+        ↓
+    SPV / FUND
+        ↓
+    REAL ASSET
 
-Evaluation should compare the orchestrated system against a single-agent or simple-aggregation baseline using:
+The asset then enters the operating cycle:
 
-- Out-of-sample performance
-- Calibration
-- Abstention quality
-- Regime-specific errors
-- Drawdown
-- Risk-adjusted returns
-- Transaction costs
-- Capacity
-- Robustness to agent failure
-- Information added by independent challenges
+ACQUIRE
+   ↓
+IMPROVE
+   ↓
+OPERATE
+   ↓
+REFINANCE / RECYCLE
+   ↓
+EXIT
 
-## Design Principle
+The architecture emphasizes value creation through the asset itself—operations, leasing, repositioning, development, capital improvements, management, and other controllable drivers—rather than relying solely on market appreciation.
 
-The system should earn the right to act.
+⸻
 
-Signals are evidence.
+The Institutional Learning Loop
 
-Agents are hypotheses.
+The defining feature of AletheiaTelos is that the investment process does not end at the closing table.
 
-The orchestrator is the referee.
+Real-world outcomes return to the system.
 
-Execution is constrained by risk.
+THESIS
+   ↓
+DECISION
+   ↓
+OUTCOME
+   ↓
+ATTRIBUTION
+   ↓
+EPISTEMIC MEMORY
+   ↓
+BETTER FUTURE UNDERWRITING
 
-And every important decision should remain auditable.
+The Observer captures what actually happened.
 
----
+Outcome Attribution compares reality with the original thesis and assumptions.
 
-**Status:** Experimental / Research Prototype
+Epistemic Memory preserves what was learned.
 
-**Version:** 1.0
-## Agent Contract
+The Computational Kaleidoscope then incorporates that knowledge into future analysis.
 
-Every Aletheia agent must return a structured decision object.
+This creates a persistent institutional feedback loop:
 
-The agent does not simply produce a prediction.
+Real World → Intelligence → Decision → Asset → Outcome → Memory → Intelligence
 
-It must expose the reasoning required for the orchestration layer to evaluate, challenge, compare, and govern that prediction.
+⸻
 
-Each agent should provide:
+Why This Matters
 
-- **Direction** — LONG, SHORT, or NEUTRAL
-- **Confidence** — calibrated confidence score
-- **Time Horizon** — expected duration of the signal
-- **Evidence** — observations supporting the decision
-- **Contradictory Evidence** — information that argues against the decision
-- **Invalidation Conditions** — what would make the thesis wrong
-- **Data Timestamp** — when the underlying information was available
-- **Model Version** — which agent/model produced the decision
-- **Regime Assumption** — the market conditions under which the decision is expected to work
-- **Capacity / Liquidity Constraint** — whether the strategy can realistically be expressed at scale
+Traditional investment systems tend to separate:
 
-### Example
+* market research
+* underwriting
+* due diligence
+* investment committee materials
+* asset management
+* portfolio reporting
+* historical knowledge
 
-```json
-{
-  "agent_id": "A",
-  "strategy": "Trend / Momentum",
-  "direction": "LONG",
-  "confidence": 0.85,
-  "horizon": "4-12d",
-  "evidence": [],
-  "contradictory_evidence": [],
-  "invalidation_conditions": [],
-  "data_timestamp": "2026-08-29T00:00:00Z",
-  "model_version": "A-v1",
-  "regime_assumption": "High-IV / Mean Reversion",
-  "capacity_constraint": null
-}
+AletheiaTelos treats them as parts of a single learning system.
 
+The goal is to create an organization in which knowledge compounds.
+
+A mistake should become information.
+
+A successful thesis should become evidence.
+
+A rejected deal should become precedent.
+
+An unexpected outcome should become a new question.
+
+Institutional memory should become an active input into future decisions.
+
+⸻
+
+Human Authority
+
+AletheiaTelos is an investment intelligence system, not an autonomous investment agent.
+
+The architecture does not assume autonomous brokerage connectivity, live trading, or independent investment execution.
+
+The system can research, analyze, challenge, compare, model, document, observe, and learn.
+
+Investment authority remains with humans.
+
+The Investment Committee is an explicit decision boundary within the architecture.
+
+⸻
+
+Governance
+
+The system operates under an explicit governing framework represented by CHARTER.md.
+
+Governance defines the boundaries surrounding:
+
+* agency
+* tools
+* persistence
+* self-modification
+* data and evidence
+* decision authority
+* human oversight
+* independent challenge
+
+The purpose of governance is not to constrain intelligence unnecessarily.
+
+It is to ensure that increasing capability does not silently become increasing authority.
+
+⸻
+
+Architecture
+
+At a high level:
+
+                    REAL WORLD
+                         │
+                         ▼
+                  OPPORTUNITY
+                         │
+                         ▼
+              ┌─────────────────────┐
+              │  COMPUTATIONAL       │
+              │     KALEIDOSCOPE    │
+              │                     │
+              │ Researcher          │
+              │ Quant               │
+              │ Investor            │
+              │ Scientist           │
+              │ Systems             │
+              │ Contrarian          │
+              │ Philosopher         │
+              │ Observer            │
+              │ Epistemic Memory    │
+              │ Meta-Intelligence   │
+              │ Governance / Charter│
+              └──────────┬──────────┘
+                         │
+                         ▼
+                  UNDERWRITING
+                         │
+                         ▼
+             HUMAN INVESTMENT COMMITTEE
+                         │
+                    ┌────┴────┐
+                    │         │
+                   GO       NO-GO
+                    │         │
+                    ▼         ▼
+                 CAPITAL    MEMORY
+                    │
+                    ▼
+                  ASSET
+                    │
+                    ▼
+              OPERATE / IMPROVE
+                    │
+                    ▼
+                  OUTCOME
+                    │
+                    ▼
+                 OBSERVER
+                    │
+                    ▼
+             OUTCOME ATTRIBUTION
+                    │
+                    ▼
+            EPISTEMIC MEMORY
+                    │
+                    └──────────────►
+                         NEXT OPPORTUNITY
+
+⸻
+
+The Vision
+
+AletheiaTelos is an experiment in rebuilding institutional real-estate investment around a different architecture:
+
+Not an AI that makes investments.
+
+Not a dashboard that displays information.
+
+Not a collection of disconnected agents.
+
+But an institutional learning system in which research, underwriting, capital, asset operations, outcomes, and memory continuously inform one another.
+
+The long-term objective is simple:
+
+Build an investment organization that gets better at investing because it remembers what actually happened.
