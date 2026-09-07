@@ -1,0 +1,112 @@
+{
+  "name": "Aletheia Agent Contract",
+  "version": "1.1",
+  "description": "Standard decision object returned by every Aletheia intelligence agent.",
+  "required": [
+    "agent_id",
+    "strategy",
+    "direction",
+    "confidence",
+    "horizon",
+    "evidence",
+    "contradictory_evidence",
+    "invalidation_conditions",
+    "data_timestamp",
+    "model_version",
+    "regime_assumption",
+    "capacity_constraint"
+  ],
+  "properties": {
+    "agent_id": {
+      "type": "string"
+    },
+    "strategy": {
+      "type": "string"
+    },
+    "direction": {
+      "type": "string",
+      "enum": [
+        "LONG",
+        "SHORT",
+        "NEUTRAL"
+      ]
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "horizon": {
+      "type": "string"
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "evidence_id",
+          "source",
+          "claim",
+          "observed_at",
+          "retrieved_at"
+        ],
+        "properties": {
+          "evidence_id": {
+            "type": "string",
+            "description": "Unique ID for this piece of evidence (client-generated)."
+          },
+          "source": {
+            "type": "string",
+            "description": "Human-readable source identifier (URL, dataset name, feed id, etc.)."
+          },
+          "claim": {
+            "type": "string",
+            "description": "What the agent concluded from or about this evidence."
+          },
+          "observed_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the evidence was observed (origin timestamp)."
+          },
+          "retrieved_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the agent retrieved/used this evidence."
+          },
+          "metadata": {
+            "type": ["object", "null"],
+            "description": "Optional additional metadata about the evidence (e.g., record ids, confidence, parsing notes)."
+          }
+        }
+      }
+    },
+    "contradictory_evidence": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "invalidation_conditions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "data_timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "model_version": {
+      "type": "string"
+    },
+    "regime_assumption": {
+      "type": "string"
+    },
+    "capacity_constraint": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "agent_id": "A",
+  "strategy": "Trend / Momentum",
+  "direction": "LONG",
+  "confidence": 0.85,
+  "horizon": "4-12d",
+  "evidence": [
+    {
+      "evidence_id": "ev-20260829-001",
+      "source": "price-feed://exchange-A/ohlcv-1d",
+      "claim": "Recent price trend remains positive; 10-day MA > 50-day MA",
+      "observed_at": "2026-08-29T00:00:00Z",
+      "retrieved_at": "2026-08-29T00:01:05Z",
+      "metadata": {
+        "symbol": "XYZ",
+        "window": "10d",
+        "indicator": "MA"
+      }
+    },
+    {
+      "evidence_id": "ev-20260829-002",
+      "source": "mom-indicator-v1://signals",
+      "claim": "Momentum remains above its historical baseline",
+      "observed_at": "2026-08-29T00:00:00Z",
+      "retrieved_at": "2026-08-29T00:01:15Z",
+      "metadata": {
+        "indicator_value": 0.72
+      }
+    }
+  ],
+  "contradictory_evidence": [
+    "Short-term mean reversion signal is negative"
+  ],
+  "invalidation_conditions": [
+    "Trend breaks below defined momentum threshold",
+    "Market regime changes materially"
+  ],
+  "data_timestamp": "2026-08-29T00:00:00Z",
+  "model_version": "A-v1",
+  "regime_assumption": "High-IV / Mean Reversion",
+  "capacity_constraint": null
+}

@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AletheiaTelos Terminal v1.1</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            jet: '#0A0A0C',
+            slate: '#121318',
+            border: '#232630',
+            cyan: '#00F0FF',
+            amber: '#FFB800',
+            red: '#FF4D5A'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .glow-cyan {
+      text-shadow: 0 0 8px rgba(0,240,255,0.45);
+    }
+
+    .glow-amber {
+      text-shadow: 0 0 8px rgba(255,184,0,0.45);
+    }
+
+    .pulse-live {
+      animation: pulse 2s cubic-bezier(0.4,0,0.6,1) infinite;
+    }
+
+    @keyframes pulse {
+      0%,100% { opacity:1 }
+      50% { opacity:.55 }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity:0;
+        transform:translateY(4px)
+      }
+      to {
+        opacity:1;
+        transform:translateY(0)
+      }
+    }
+
+    ::-webkit-scrollbar {
+      width:6px;
+      height:6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background:#121318;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background:#232630;
+      border-radius:3px;
+    }
+  </style>
+</head>
+
+<body class="bg-jet text-white min-h-screen overflow-x-hidden">
+
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
+
+<script type="text/babel">
+
+const { useState, useEffect, useMemo, useCallback } = React;
+
+
+/* ============================================================
+   INITIAL AGENT DEFINITIONS
+   ============================================================ */
+
+const INITIAL_STRATEGIES = [
+
+  {
+    id: 'A',
+    name: 'Trend / Momentum',
+    signal: 'LONG',
+    conf: 85,
+    horizon: '4–12d',
+    weight: 0.22,
+    online: true,
+    evidence: 'Recent price persistence and trend continuation',
+    timestamp: '2026-08-29 15:58 UTC',
+    regime: 'Normal / trending',
+    challengeable: true
+  },
+
+  {
+    id: 'B',
+    name: 'Mean Reversion',
+    signal: 'SHORT',
+    conf: 72,
+    horizon: '1–3d',
+    weight: 0.18,
+    online: true,
+    evidence: 'Short-term deviation from local mean',
+    timestamp: '2026-08-29 15:57 UTC',
+    regime: 'High-IV / reverting',
+    challengeable: true
+  },
+
+  {
+    id: 'C',
+    name: 'Volatility Arbitrage',
+    signal: 'NEUTRAL',
+    conf: 90,
+    horizon: '2–8d',
+    weight: 0.20,
+    online: true,
+    evidence: 'Options-implied volatility structure',
+    timestamp: '2026-08-29 15:59 UTC',
+    regime: 'Elevated volatility',
+    challengeable: true
+  },
+
+  {
+    id: 'D',
+    name: 'Macro / RWA Flow',
+    signal: 'LONG',
+    conf: 64,
+    horizon: '10–30d',
+    weight: 0.25,
+    online: true,
+    evidence: 'Macro liquidity and real-world asset flow',
+    timestamp: '2026-08-29 15:55 UTC',
+    regime: 'Macro expansion',
+    challengeable: true
+  },
+
+  {
+    id: 'E',
+    name: 'Liquidity Flow',
+    signal: 'SHORT',
+    conf: 81,
+    horizon: '0.5–2d',
+    weight: 0.15,
+    online: true,
+    evidence: 'Short-horizon liquidity imbalance',
+    timestamp: '2026-08-29 15:56 UTC',
+    regime: 'Liquidity stress',
+    challengeable: true
+  }
+
+];
+
+
+const REGIMES = {
+
+  normal: {
+    label: 'High-IV / Mean Reversion',
+    stress: false
+  },
+
+  shock: {
+    label: 'Volatility Shock',
+    stress: true
+  }
+
+};
+
+
+/* ============================================================
+   UI COMPONENTS
+   ============================================================ */
+
+function Badge({ signal }) {
+
+  const map = {
+
+    LONG:
+      'bg-cyan/20 text-cyan border-cyan/40',
+
+    SHORT:
+      'bg-amber/20 text-amber border-amber/40',
+
+    NEUTRAL:
+      'bg-gray-600/30 text-gray-300 border-gray-500/40'
+
+  };
+
+  return (
+
+    <span
+      className={`px-2 py-0.5 text-xs font-semibold rounded border mono ${
+        map[signal] || map.NEUTRAL
+      }`}
+    >
+      {signal}
+    </span>
+
+  );
+
+}
+
+
+function MetricCard({ label, value, sub, accent='cyan' }) {
+
+  return (
+
+    <div className="bg-slate border border-border rounded-lg px-4 py-3">
+
+      <div className="text-[10px] uppercase tracking-wider text-gray-400 mb-1">
+        {label}
+      </div>
+
+      <div
+        className={`text-xl font-bold mono ${
+          accent === 'cyan'
+            ? 'text-cyan glow-cyan'
+            : 'text-amber glow-amber'
+        }`}
+      >
+        {value}
+      </div>
+
+      {sub && (
+        <div className="text-xs text-gray-500 mt-0.5">
+          {sub}
+        </div>
+      )}
+
+    </div>
+
+  );
+
+}
+
+
+/* ============================================================
+   MAIN APPLICATION
+   ============================================================ */
+
+function App() {
+
+  const [strategies, setStrategies] =
+    useState(INITIAL_STRATEGIES);
+
+  const [regime, setRegime] =
+    useState('normal');
+
+  const [orchestrationMode, setOrchestrationMode] =
+    useState(true);
+
+  const [selectedAgent, setSelectedAgent] =
+    useState('A');
+
+  const [auditLog, setAuditLog] =
+    useState([
+
+      {
+        id: 1,
+        ts: '15:41:02',
+        code: 'AUDIT-001',
+        msg: 'System initialized. Five independent agents online.'
+      },
+
+      {
+        id: 2,
+        ts: '15:41:05',
+        code: 'AUDIT-012',
+        msg: 'Strategy C declared NEUTRAL. Local confidence preserved.'
+      },
+
+      {
+        id: 3,
+        ts: '15:41:09',
+        code: 'PROV-001',
+        msg: 'Evidence provenance layer activated. Claims are now challengeable.'
+      }
+
+    ]);
+
+  const [conviction, setConviction] =
+    useState(78);
+
+  const [lastUpdate, setLastUpdate] =
+    useState(new Date().toLocaleTimeString());
+
+
+  /* ------------------------------------------------------------
+     AUDIT
+     ------------------------------------------------------------ */
+
+  const addAudit = useCallback((msg, code=null) => {
+
+    const id = Date.now();
+
+    const ts =
+      new Date().toLocaleTimeString('en-GB', {
+        hour12:false
+      });
+
+    const c =
+      code ||
+      `AUDIT-${String(Math.floor(Math.random()*900)+100)}`;
+
+    setAuditLog(prev => [
+
+      {
+        id,
+        ts,
+        code:c,
+        msg
+      },
+
+      ...prev
+
+    ].slice(0,40));
+
+  }, []);
+
+
+  /* ------------------------------------------------------------
+     CLOCK
+     ------------------------------------------------------------ */
+
+  useEffect(() => {
+
+    const timer =
+      setInterval(
+        () =>
+          setLastUpdate(
+            new Date().toLocaleTimeString()
+          ),
+        1000
+      );
+
+    return () => clearInterval(timer);
+
+  }, []);
+
+
+  /* ------------------------------------------------------------
+     DERIVED METRICS
+     ------------------------------------------------------------ */
+
+  const onlineStrats =
+    strategies.filter(s => s.online);
+
+
+  const grossExposure =
+    onlineStrats
+      .reduce(
+        (sum,s) =>
+          sum + Math.abs(s.weight)*100,
+        0
+      )
+      .toFixed(1);
+
+
+  const netDelta =
+    onlineStrats
+      .reduce((sum,s) => {
+
+        if (s.signal === 'LONG')
+          return sum + s.weight*100;
+
+        if (s.signal === 'SHORT')
+          return sum - s.weight*100;
+
+        return sum;
+
+      },0)
+      .toFixed(1);
+
+
+  const conflicts =
+    useMemo(() => {
+
+      const longs =
+        onlineStrats.filter(
+          s => s.signal === 'LONG'
+        );
+
+      const shorts =
+        onlineStrats.filter(
+          s => s.signal === 'SHORT'
+        );
+
+      const pairs = [];
+
+      longs.forEach(l => {
+
+        shorts.forEach(sh => {
+
+          pairs.push({
+            long:l,
+            short:sh
+          });
+
+        });
+
+      });
+
+      return pairs;
+
+    }, [strategies]);
+
+
+  /* ------------------------------------------------------------
+     SIMPLE AVERAGING BASELINE
+     ------------------------------------------------------------ */
+
+  const simpleAvgSignal =
+    useMemo(() => {
+
+      if (!onlineStrats.length)
+        return 'NEUTRAL';
+
+      let score = 0;
+
+      onlineStrats.forEach(s => {
+
+        if (s.signal === 'LONG')
+          score += s.conf;
+
+        if (s.signal === 'SHORT')
+          score -= s.conf;
+
+      });
+
+      if (Math.abs(score) < 30)
+        return 'NEUTRAL / CANCELLED';
+
+      return score > 0
+        ? 'WEAK LONG'
+        : 'WEAK SHORT';
+
+    }, [strategies]);
+
+
+  /* ------------------------------------------------------------
+     ORCHESTRATED ALLOCATION
+     ------------------------------------------------------------ */
+
+  const orchestratedAlloc =
+    useMemo(() => {
+
+      return onlineStrats.map(s => {
+
+        let scale = 1;
+
+        if (s.id === 'B' &&
+            onlineStrats.find(
+              x => x.id === 'D' &&
+              x.signal === 'LONG'
+            ))
+          scale *= 0.70;
+
+        if (s.id === 'A' &&
+            onlineStrats.find(
+              x => x.id === 'E' &&
+              x.signal === 'SHORT'
+            ))
+          scale *= 0.85;
+
+        if (regime === 'shock') {
+
+          if (s.id === 'C')
+            scale *= 1.35;
+
+          if (s.id === 'A')
+            scale *= 0.65;
+
+          if (s.id === 'B')
+            scale *= 1.15;
+
+        }
+
+        if (!orchestrationMode)
+          scale = 1;
+
+        return {
+
+          ...s,
+
+          alloc:
+            (
+              s.weight *
+              100 *
+              scale
+            ).toFixed(1)
+
+        };
+
+      });
+
+    },
+    [
+      strategies,
+      regime,
+      orchestrationMode
+    ]);
+
+
+  /* ------------------------------------------------------------
+     CONVICTION
+     ------------------------------------------------------------ */
+
+  useEffect(() => {
+
+    const online =
+      strategies.filter(
+        s => s.online
+      );
+
+    const base =
+      online.reduce(
+        (sum,s) =>
+          sum+s.conf,
+        0
+      ) /
+      Math.max(
+        online.length,
+        1
+      );
+
+    const conflictPenalty =
+      conflicts.length * 3;
+
+    setConviction(
+
+      Math.max(
+        35,
+        Math.min(
+          95,
+          Math.round(
+            base -
+            conflictPenalty -
+            (regime === 'shock' ? 8 : 0)
+          )
+        )
+      )
+
+    );
+
+  }, [
+    strategies,
+    regime,
+    conflicts.length
+  ]);
+
+
+  /* ------------------------------------------------------------
+     AGENT TOGGLE
+     ------------------------------------------------------------ */
+
+  const toggleAgent = id => {
+
+    setStrategies(prev =>
+
+      prev.map(s => {
+
+        if (s.id !== id)
+          return s;
+
+        const next =
+          !s.online;
+
+        addAudit(
+
+          next
+            ? `Strategy ${id} restored ONLINE.`
+            : `Strategy ${id} taken OFFLINE. Capital re-routed.`,
+
+          'AUDIT-AGENT'
+
+        );
+
+        return {
+          ...s,
+          online:next
+        };
+
+      })
+
+    );
+
+  };
+
+
+  /* ------------------------------------------------------------
+     CHALLENGE AGENT
+     ------------------------------------------------------------ */
+
+  const challengeAgent = id => {
+
+    const agent =
+      strategies.find(
+        s => s.id === id
+      );
+
+    if (!agent)
+      return;
+
+    addAudit(
+
+      `Challenge issued against Agent ${id}: ${agent.name}. Evidence and regime assumptions require independent verification.`,
+
+      'CHALLENGE-001'
+
+    );
+
+  };
+
+
+  /* ------------------------------------------------------------
+     STRESS TEST
+     ------------------------------------------------------------ */
+
+  const runStressTest = () => {
+
+    setRegime('shock');
+
+    addAudit(
+      'Market regime forced to VOLATILITY SHOCK. Re-weighting agents.',
+      'AUDIT-088'
+    );
+
+    setTimeout(() => {
+
+      addAudit(
+        'Strategy C Vol Arb weight increased +35%. Momentum scaled down.',
+        'AUDIT-091'
+      );
+
+    },500);
+
+    setTimeout(() => {
+
+      addAudit(
+        'Conflict structure preserved rather than averaged away.',
+        'AUDIT-094'
+      );
+
+    },900);
+
+  };
+
+
+  const resetRegime = () => {
+
+    setRegime('normal');
+
+    addAudit(
+      'Regime restored to baseline.',
+      'AUDIT-100'
+    );
+
+  };
+
+
+  const selected =
+    strategies.find(
+      s => s.id === selectedAgent
+    );
+
+
+  return (
+
+    <div className="min-h-screen bg-jet text-white">
+
+      {/* ======================================================
+          HEADER
+          ====================================================== */}
+
+      <header className="border-b border-border bg-slate/80 sticky top-0 z-50">
+
+        <div className="max-w-[1600px] mx-auto px-4 py-3 flex justify-between items-center">
+
+          <div>
+
+            <span className="text-cyan font-bold text-lg glow-cyan">
+              Aletheia
+            </span>
+
+            <span className="text-amber font-bold text-lg glow-amber">
+              Telos
+            </span>
+
+            <span className="text-gray-500 text-sm mono ml-2">
+              Terminal v1.1
+            </span>
+
+          </div>
+
+          <div className="text-xs mono text-gray-400">
+
+            <span className="pulse-live text-cyan">
+              ● LIVE
+            </span>
+
+            <span className="ml-3">
+              {lastUpdate}
+            </span>
+
+          </div>
+
+        </div>
+
+      </header>
+
+
+      <main className="max-w-[1600px] mx-auto px-4 py-5 space-y-5">
+
+
+        {/* ====================================================
+            METRICS
+            ==================================================== */}
+
+        <section className="grid grid-cols-2 md:grid-cols-4 gap-3">
+
+          <MetricCard
+            label="System Conviction"
+            value={`${conviction}/100`}
+            sub="Evidence-adjusted intelligence"
+          />
+
+          <MetricCard
+            label="Active Regime"
+            value={
+              regime === 'shock'
+                ? 'SHOCK'
+                : 'NORMAL'
+            }
+            sub={REGIMES[regime].label}
+            accent={
+              regime === 'shock'
+                ? 'amber'
+                : 'cyan'
+            }
+          />
+
+          <MetricCard
+            label="Gross Exposure"
+            value={`${grossExposure}%`}
+            sub={`Net Δ ${netDelta}`}
+          />
+
+          <MetricCard
+            label="Conflicts"
+            value={conflicts.length}
+            sub="Independent disagreement pairs"
+            accent="amber"
+          />
+
+        </section>
+
+
+        {/* ====================================================
+            INTELLIGENCE SWARM
+            ==================================================== */}
+
+        <section className="bg-slate border border-border rounded-xl overflow-hidden">
+
+          <div className="px-4 py-3 border-b border-border flex justify-between">
+
+            <h2 className="font-semibold text-sm">
+
+              <span className="text-cyan">
+                Aletheia
+              </span>
+
+              {' '}· Independent Intelligence Swarm
+
+            </h2>
+
+            <span className="text-xs text-gray-500 mono">
+
+              {onlineStrats.length}/5 ONLINE
+
+            </span>
+
+          </div>
+
+
+          <div className="overflow-x-auto">
+
+            <table className="w-full text-sm">
+
+              <thead>
+
+                <tr className="text-left text-[11px] uppercase tracking-wider text-gray-500 border-b border-border">
+
+                  <th className="px-4 py-3">
+                    Strategy
+                  </th>
+
+                  <th className="px-4 py-3">
+                    Signal
+                  </th>
+
+                  <th className="px-4 py-3">
+                    Confidence
+                  </th>
+
+                  <th className="px-4 py-3">
+                    Horizon
+                  </th>
+
+                  <th className="px-4 py-3">
+                    Provenance
+                  </th>
+
+                  <th className="px-4 py-3 text-right">
+                    Action
+                  </th>
+
+                </tr>
+
+              </thead>
+
+
+              <tbody>
+
+                {strategies.map(s => (
+
+                  <tr
+                    key={s.id}
+                    className={`border-b border-border/60 ${
+                      !s.online
+                        ? 'opacity-40'
+                        : ''
+                    }`}
+                  >
+
+                    <td className="px-4 py-3">
+
+                      <button
+                        onClick={() =>
+                          setSelectedAgent(s.id)
+                        }
+                        className="text-left"
+                      >
+
+                        <div className="font-medium">
+                          {s.name}
+                        </div>
+
+                        <div className="text-xs text-gray-500 mono">
+                          Agent {s.id}
+                        </div>
+
+                      </button>
+
+                    </td>
+
+
+                    <td className="px-4 py-3">
+
+                      <Badge signal={s.signal}/>
+
+                    </td>
+
+
+                    <td className="px-4 py-3 mono">
+
+                      {s.conf}%
+
+                    </td>
+
+
+                    <td className="px-4 py-3 text-gray-400 mono text-xs">
+
+                      {s.horizon}
+
+                    </td>
+
+
+                    <td className="px-4 py-3">
+
+                      <div className="text-xs text-gray-400">
+                        {s.timestamp}
+                      </div>
+
+                      <div className="text-[11px] text-gray-600">
+                        {s.regime}
+                      </div>
+
+                    </td>
+
+
+                    <td className="px-4 py-3 text-right">
+
+                      <button
+                        onClick={() =>
+                          challengeAgent(s.id)
+                        }
+                        className="text-xs px-3 py-1 rounded border border-amber/40 text-amber hover:bg-amber/10"
+                      >
+                        CHALLENGE
+                      </button>
+
+                    </td>
+
+                  </tr>
+
+                ))}
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </section>
+
+
+        {/* ====================================================
+            PROVENANCE PANEL
+            ==================================================== */}
+
+        {selected && (
+
+          <section className="bg-slate border border-border rounded-xl overflow-hidden">
+
+            <div className="px-4 py-3 border-b border-border flex justify-between">
+
+              <div>
+
+                <h2 className="font-semibold text-sm">
+
+                  Evidence & Provenance
+
+                </h2>
+
+                <div className="text-xs text-gray-500 mono mt-1">
+
+                  Agent {selected.id} · {selected.name}
+
+                </div>
+
+              </div>
+
+              <Badge signal={selected.signal}/>
+
+            </div>
+
+
+            <div className="p-4 grid md:grid-cols-2 gap-4">
+
+              <div>
+
+                <div className="text-[10px] uppercase tracking-wider text-gray-500">
+                  Claim
+                </div>
+
+                <div className="mt-2 text-sm">
+                  Agent believes the current market supports a{' '}
+                  <span className="text-cyan">
+                    {selected.signal}
+                  </span>{' '}
+                  posture.
+                </div>
+
+              </div>
+
+
+              <div>
+
+                <div className="text-[10px] uppercase tracking-wider text-gray-500">
+                  Evidence Available
+                </div>
+
+                <div className="mt-2 text-sm text-gray-300">
+                  {selected.evidence}
+                </div>
+
+              </div>
+
+
+              <div>
+
+                <div className="text-[10px] uppercase tracking-wider text-gray-500">
+                  Evidence Timestamp
+                </div>
+
+                <div className="mt-2 mono text-xs text-cyan">
+                  {selected.timestamp}
+                </div>
+
+              </div>
+
+
+              <div>
+
+                <div className="text-[10px] uppercase tracking-wider text-gray-500">
+                  Regime Assumption
+                </div>
+
+                <div className="mt-2 mono text-xs text-amber">
+                  {selected.regime}
+                </div>
+
+              </div>
+
+
+              <div className="md:col-span-2 border-t border-border pt-4">
+
+                <div className="text-[10px] uppercase tracking-wider text-gray-500 mb-2">
+                  What Can Overturn This Claim?
+                </div>
+
+                <ul className="text-xs text-gray-400 space-y-1 mono">
+
+                  <li>
+                    • New evidence timestamped after the original claim
+                  </li>
+
+                  <li>
+                    • Evidence contradicting the agent's core assumption
+                  </li>
+
+                  <li>
+                    • Regime classification changing materially
+                  </li>
+
+                  <li>
+                    • Demonstrated deterioration in historical calibration
+                  </li>
+
+                  <li>
+                    • Independent agent challenge with stronger provenance
+                  </li>
+
+                </ul>
+
+              </div>
+
+            </div>
+
+          </section>
+
+        )}
+
+
+        {/* ====================================================
+            CONFLICT ENGINE
+            ==================================================== */}
+
+        <section className="bg-slate border border-border rounded-xl overflow-hidden">
+
+          <div className="px-4 py-3 border-b border-border">
+
+            <h2 className="font-semibold text-sm">
+
+              <span className="text-cyan">
+                Aletheia
+              </span>
+
+              {' '}Conflict & Coexistence Engine
+
+            </h2>
+
+          </div>
+
+
+          <div className="p-4 grid md:grid-cols-2 gap-4">
+
+
+            <div>
+
+              <div className="text-xs uppercase tracking-wider text-gray-500 mb-3">
+                Detected Conflicts
+              </div>
+
+              <div className="space-y-2">
+
+                {conflicts.map((c,i) => (
+
+                  <div
+                    key={i}
+                    className="bg-jet/60 border border-border rounded-lg p-3"
+                  >
+
+                    <div className="flex items-center gap-2">
+
+                      <Badge signal="LONG"/>
+
+                      <span className="text-xs text-gray-500">
+                        Agent {c.long.id}
+                      </span>
+
+                      <span className="text-gray-600">
+                        vs
+                      </span>
+
+                      <Badge signal="SHORT"/>
+
+                      <span className="text-xs text-gray-500">
+                        Agent {c.short.id}
+                      </span>
+
+                    </div>
+
+                    <div className="text-xs text-gray-400 mt-2">
+
+                      Different horizons may explain the disagreement.
+
+                    </div>
+
+                  </div>
+
+                ))}
+
+              </div>
+
+            </div>
+
+
+            <div className="bg-jet/40 border border-border rounded-lg p-4">
+
+              <div className="text-xs uppercase tracking-wider text-gray-500 mb-3">
+                Baseline Comparison
+              </div>
+
+              <div className="text-amber font-medium">
+                Forced Simple Averaging
+              </div>
+
+              <div className="text-2xl mono text-amber mt-1">
+                {simpleAvgSignal}
+              </div>
+
+              <p className="text-xs text-gray-400 mt-3 leading-relaxed">
+
+                The baseline collapses independent signals into a single
+                arithmetic result.
+
+              </p>
+
+              <div className="border-t border-border mt-4 pt-4">
+
+                <div className="text-cyan font-medium">
+                  AletheiaTelos
+                </div>
+
+                <div className="text-xs text-gray-400 mt-2">
+                  Preserves disagreement and asks whether the conflict
+                  contains useful information.
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        {/* ====================================================
+            TELOS ALLOCATION
+            ==================================================== */}
+
+        <section className="grid lg:grid-cols-2 gap-4">
+
+
+          <div className="bg-slate border border-border rounded-xl">
+
+            <div className="px-4 py-3 border-b border-border">
+
+              <h2 className="font-semibold text-sm">
+
+                <span className="text-amber">
+                  Telos
+                </span>
+
+                {' '}Orchestrated Allocation
+
+              </h2>
+
+            </div>
+
+
+            <div className="p-4 space-y-4">
+
+              {orchestratedAlloc.map(s => (
+
+                <div key={s.id}>
+
+                  <div className="flex justify-between text-xs">
+
+                    <span>
+                      Agent {s.id} · {s.name}
+                    </span>
+
+                    <span className="mono text-cyan">
+                      {s.alloc}%
+                    </span>
+
+                  </div>
+
+                  <div className="h-1.5 bg-jet rounded-full mt-2 overflow-hidden">
+
+                    <div
+                      className={`h-full ${
+                        s.signal === 'LONG'
+                          ? 'bg-cyan'
+                          : s.signal === 'SHORT'
+                            ? 'bg-amber'
+                            : 'bg-gray-500'
+                      }`}
+                      style={{
+                        width:
+                          `${Math.min(
+                            100,
+                            parseFloat(s.alloc)*2.2
+                          )}%`
+                      }}
+                    />
+
+                  </div>
+
+                </div>
+
+              ))}
+
+            </div>
+
+          </div>
+
+
+          {/* AUDIT */}
+
+          <div className="bg-slate border border-border rounded-xl">
+
+            <div className="px-4 py-3 border-b border-border">
+
+              <h2 className="font-semibold text-sm">
+                Audit Trail
+              </h2>
+
+            </div>
+
+            <div className="p-3 max-h-72 overflow-y-auto space-y-2 mono text-xs">
+
+              {auditLog.map(entry => (
+
+                <div
+                  key={entry.id}
+                  className="flex gap-2"
+                >
+
+                  <span className="text-gray-600">
+                    {entry.ts}
+                  </span>
+
+                  <span className="text-cyan">
+                    [{entry.code}]
+                  </span>
+
+                  <span className="text-gray-300">
+                    {entry.msg}
+                  </span>
+
+                </div>
+
+              ))}
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        {/* ====================================================
+            CONTROLS
+            ==================================================== */}
+
+        <section className="flex flex-wrap gap-3 pb-10">
+
+          <button
+            onClick={runStressTest}
+            className="px-5 py-2.5 bg-amber/15 border border-amber/50 text-amber rounded-lg text-sm"
+          >
+            ⚡ Run Market Stress Test
+          </button>
+
+
+          {regime === 'shock' && (
+
+            <button
+              onClick={resetRegime}
+              className="px-5 py-2.5 border border-border text-gray-300 rounded-lg text-sm"
+            >
+              Restore Baseline
+            </button>
+
+          )}
+
+
+          <button
+            onClick={() => {
+
+              setOrchestrationMode(
+                !orchestrationMode
+              );
+
+              addAudit(
+                orchestrationMode
+                  ? 'Simple averaging baseline engaged.'
+                  : 'AletheiaTelos orchestration restored.',
+                'AUDIT-MODE'
+              );
+
+            }}
+            className={`px-5 py-2.5 rounded-lg border text-sm ${
+              orchestrationMode
+                ? 'border-cyan/50 text-cyan'
+                : 'border-amber/50 text-amber'
+            }`}
+          >
+
+            {orchestrationMode
+              ? 'AletheiaTelos Orchestration'
+              : 'Simple Averaging Baseline'}
+
+          </button>
+
+
+          <div className="ml-auto text-xs text-gray-600 max-w-lg text-right">
+
+            Evidence is time-locked.<br/>
+            Claims are challengeable.<br/>
+            Disagreement is preserved until the evidence gives the system
+            a reason to overturn it.
+
+          </div>
+
+        </section>
+
+      </main>
+
+    </div>
+
+  );
+
+}
+
+
+const root =
+  ReactDOM.createRoot(
+    document.getElementById('root')
+  );
+
+root.render(<App />);
+
+</script>
+
+</body>
+</html>
