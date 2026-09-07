@@ -288,3 +288,225 @@ But an institutional learning system in which research, underwriting, capital, a
 The long-term objective is simple:
 
 Build an investment organization that gets better at investing because it remembers what actually happened.
+
+Execution Substrate
+
+AletheiaTelos separates institutional intelligence from the infrastructure required to execute computational work.
+
+The system does not seek to reinvent agent runtimes, sandbox environments, tool orchestration, context management, skills, or other execution infrastructure where mature open-source systems can provide those capabilities.
+
+An execution substrate such as DeerFlow may provide the underlying machinery for:
+
+* agent execution
+* subagent orchestration
+* skills
+* tools and MCP
+* sandboxed computation
+* filesystem and artifact management
+* context engineering
+* task lifecycle management
+* model abstraction
+* persistent execution state
+
+AletheiaTelos governs what that machinery is used to accomplish.
+
+The distinction is fundamental:
+
+The execution substrate determines how work is performed.
+
+AletheiaTelos determines why the work is performed, which perspectives participate, what evidence is acceptable, how disagreement is handled, what authority exists, and how the resulting knowledge becomes institutional memory.
+
+The execution substrate is therefore replaceable.
+
+The institutional intelligence architecture is not dependent upon any single runtime.
+
+⸻
+
+Evidence Ledger
+
+Between research and decision, AletheiaTelos maintains an explicit evidence and provenance layer.
+
+Consequential claims should be traceable through:
+
+SOURCE
+↓
+OBSERVATION
+↓
+EVIDENCE
+↓
+INTERPRETATION
+↓
+CLAIM
+↓
+AGENT BELIEF
+↓
+SYNTHESIS
+↓
+DECISION
+↓
+OUTCOME
+
+The Evidence Ledger preserves the relationship between what was observed, what was inferred, what was believed, and what was ultimately decided.
+
+A consequential claim may contain:
+
+* source
+* source timestamp
+* observation
+* evidence
+* inference
+* supporting evidence
+* contradictory evidence
+* originating perspective
+* confidence
+* freshness
+* provenance
+* falsification condition
+* subsequent outcome
+* current status
+
+This prevents institutional memory from becoming a collection of conclusions without context.
+
+The objective is not simply to remember what the system believed.
+
+It is to remember why it believed it.
+
+⸻
+
+Conflict & Coexistence
+
+AletheiaTelos does not treat disagreement between perspectives as a failure condition.
+
+Disagreement is information.
+
+The Conflict & Coexistence Engine examines differences between perspectives and attempts to determine:
+
+* which assumptions differ
+* which evidence differs
+* whether claims are actually contradictory
+* whether disagreement is factual, probabilistic, semantic, or methodological
+* which perspective contains unique information
+* what evidence could resolve the disagreement
+* whether the disagreement should remain unresolved
+* how disagreement should affect overall uncertainty
+
+The objective is not to force consensus.
+
+The objective is to understand the structure of disagreement before reaching a synthesis.
+
+AletheiaTelos therefore distinguishes between:
+
+Agreement
+
+Disagreement
+
+Uncertainty
+
+Insufficient Evidence
+
+Irreducible Ambiguity
+
+A disagreement that cannot be resolved should not automatically be converted into consensus.
+
+Sometimes the correct institutional conclusion is:
+
+We do not know.
+
+⸻
+
+Epistemic Independence
+
+The Computational Kaleidoscope is not simply a collection of parallel prompts.
+
+Each perspective is intended to represent a distinct reasoning mandate.
+
+Perspectives may differ in:
+
+* objectives
+* analytical methods
+* evidence requirements
+* assumptions
+* failure modes
+* confidence
+* domain expertise
+* incentives
+* permissible conclusions
+* required challenges to the investment thesis
+
+For example, the Contrarian is explicitly responsible for identifying reasons an investment thesis may be wrong.
+
+The Scientist is responsible for distinguishing hypotheses from evidence and testing causal assumptions.
+
+The Quant is responsible for probabilistic and quantitative analysis.
+
+The Philosopher examines definitions, assumptions, conceptual integrity, and epistemic validity.
+
+The Observer evaluates what actually happened.
+
+Meta-Intelligence evaluates the quality of the reasoning process itself.
+
+These roles are designed to preserve productive independence rather than maximize agreement.
+
+The system should be capable of reaching consensus.
+
+It should also be capable of explaining why consensus should not be reached.
+
+⸻
+
+Institutional Intelligence as a Layer
+
+AletheiaTelos is therefore best understood not as another agent framework, but as an institutional intelligence layer operating above an execution substrate.
+
+At a conceptual level:
+
+                     ALETHEIATelos
+                          │
+          ┌───────────────┴───────────────┐
+          │                               │
+      GOVERNANCE                     EPISTEMOLOGY
+       CHARTER                           │
+          │                               │
+          └───────────────┬───────────────┘
+                          │
+               COMPUTATIONAL
+                 KALEIDOSCOPE
+                          │
+             ┌────────────┴────────────┐
+             │                         │
+      EVIDENCE LEDGER            CONFLICT ENGINE
+             │                         │
+             └────────────┬────────────┘
+                          │
+                     SYNTHESIS
+                          │
+               HUMAN INVESTMENT
+                   AUTHORITY
+                          │
+                     REAL WORLD
+                          │
+                       OUTCOME
+                          │
+                     OBSERVER
+                          │
+                OUTCOME ATTRIBUTION
+                          │
+                 EPISTEMIC MEMORY
+                          │
+                          └──────►
+                   EXECUTION SUBSTRATE
+                          │
+                       DEERFLOW
+                          │
+          ┌───────────────┼───────────────┐
+          │               │               │
+        Agents          Skills           Tools
+          │               │               │
+          └──────────── Sandbox / MCP ────┘
+
+The substrate provides computational capability.
+
+AletheiaTelos provides institutional purpose, epistemic structure, governance, memory, and learning.
+
+The result is intended to be more than a multi-agent system.
+
+It is an attempt to create a persistent institutional intelligence that can reason, disagree, decide, observe, remember, and improve without confusing capability with authority.
